@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.Switch
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import com.example.precofipeapp.database.dao.UsuarioDAO
 import com.example.precofipeapp.util.DialogUtil
 import com.example.precofipeapp.util.KeyUtil
 
@@ -18,8 +19,7 @@ class LoginActivity : ComponentActivity() {
     lateinit var btnEntrar: Button
     lateinit var btnRegistrar: Button
     lateinit var switchLembrarSenha: Switch
-
-    var hmpUsuarios: HashMap<String, String> = HashMap<String, String>()
+    lateinit var dao: UsuarioDAO
 
     val REQUEST_REGISTRO = 10
 
@@ -27,9 +27,6 @@ class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
-
-        hmpUsuarios.put("administrador@gmail.com","administrador")
-        hmpUsuarios.put("teste@gmail.com", "teste")
 
         switchLembrarSenha = findViewById(R.id.switchLembrarSenha)
         editEmail = findViewById(R.id.editEmail)
@@ -40,8 +37,6 @@ class LoginActivity : ComponentActivity() {
             val it = Intent(this, RegistroActivity::class.java)
             startActivityForResult(it, REQUEST_REGISTRO)
         }
-
-
 
         btnEntrar = findViewById(R.id.btnEntrar);
         btnEntrar.setOnClickListener {
@@ -54,26 +49,18 @@ class LoginActivity : ComponentActivity() {
                 editSenha.setError("Campo Senha obrigatório!")
             } else {
 
-                //TODO: irá usar banco local
-                if (hmpUsuarios.containsKey(conteudoEmail)) {
-                    var senhaBanco = hmpUsuarios.get(conteudoEmail)
-
-                    if (senhaBanco.equals(conteudoSenha)) {
-
-                        if (switchLembrarSenha.isChecked()){
-                            var preferencesTmp = PreferenceManager.getDefaultSharedPreferences(this)
-                            var edito = preferencesTmp.edit()
-                            edito.putString(KeyUtil.KEY_USUARIO, conteudoEmail).putString(KeyUtil.KEY_SENHA, conteudoSenha).apply()
-                        }
-
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-                    } else {
-                        //Toast.makeText(this, "Senha inválida", Toast.LENGTH_LONG).show()
-                        DialogUtil.show("Erro", "Senha inválida", this)
+                dao = UsuarioDAO(this)
+                val usuarioFounded: Boolean = dao.Select(conteudoEmail, conteudoSenha)
+                if (usuarioFounded) {
+                    if (switchLembrarSenha.isChecked()){
+                        var preferencesTmp = PreferenceManager.getDefaultSharedPreferences(this)
+                        var edito = preferencesTmp.edit()
+                        edito.putString(KeyUtil.KEY_USUARIO, conteudoEmail).putString(KeyUtil.KEY_SENHA, conteudoSenha).apply()
                     }
+
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
                 } else {
-                    //Toast.makeText(this, "Usuário inválido", Toast.LENGTH_LONG).show()
                     DialogUtil.show("Erro", "Usuário inválido", this)
                 }
             }

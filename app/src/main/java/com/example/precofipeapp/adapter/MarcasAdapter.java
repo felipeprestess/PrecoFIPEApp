@@ -7,16 +7,17 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.precofipeapp.R;
+import com.example.precofipeapp.api.model.Marcas;
 import com.example.precofipeapp.model.Veiculo;
 
 import java.util.ArrayList;
 
-public class VeiculoAdapter extends BaseAdapter {
+public class MarcasAdapter extends BaseAdapter {
 
     private Activity activity;
-    private ArrayList<Veiculo> arrayVeiculos;
+    private ArrayList<Marcas> arrayVeiculos;
 
-    public VeiculoAdapter(final Activity activity, final ArrayList<Veiculo> array) {
+    public MarcasAdapter(final Activity activity, final ArrayList<Marcas> array) {
         this.activity = activity;
         this.arrayVeiculos = array;
     }
@@ -40,14 +41,14 @@ public class VeiculoAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         if (convertView == null){
-            convertView = activity.getLayoutInflater().inflate(R.layout.item_lista_veiculo, parent, false);
+            convertView = activity.getLayoutInflater().inflate(R.layout.item_lista, parent, false);
         }
 
-        TextView textVeiculo = convertView.findViewById(R.id.textVeiculo);
-        textVeiculo.setText(arrayVeiculos.get(position).getNomeVeiculo());
+        TextView textNome = convertView.findViewById(R.id.textNome);
+        textNome.setText(arrayVeiculos.get(position).getNome());
 
-        TextView textAnoFabricao = convertView.findViewById(R.id.textAnoFabricacao);
-        textAnoFabricao.setText(""+arrayVeiculos.get(position).getAnoFabricacao());
+        TextView textCodigo = convertView.findViewById(R.id.textCodigo);
+        textCodigo.setText(""+arrayVeiculos.get(position).getCodigo());
 
         return convertView;
     }

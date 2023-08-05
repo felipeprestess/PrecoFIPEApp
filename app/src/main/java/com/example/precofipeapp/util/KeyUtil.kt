@@ -8,5 +8,7 @@ class KeyUtil {
         val KEY_REGISTRO_SENHA_USUARIO = "KEY_REGISTRO_SENHA_USUARIO"
         val KEY_USUARIO = "KEY_USUARIO"
         val KEY_SENHA = "KEY_SENHA"
+        val KEY_CODIGO_MARCA = "KEY_CODIGO_MARCA"
+        val KEY_CODIGO_MODELO = "KEY_CODIGO_MODELO"
     }
 }

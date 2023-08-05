@@ -7,6 +7,9 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.precofipeapp.R
+import com.example.precofipeapp.database.dao.UsuarioDAO
+import com.example.precofipeapp.database.model.UsuarioModel
+import com.example.precofipeapp.util.DialogUtil
 import com.example.precofipeapp.util.KeyUtil
 
 class RegistroActivity : ComponentActivity() {
@@ -17,6 +20,7 @@ class RegistroActivity : ComponentActivity() {
     lateinit var editNomeUsuario: EditText
     lateinit var editSenhaUsuario: EditText
     lateinit var editConfirmaSenhaUsuario: EditText
+    lateinit var dao: UsuarioDAO
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,14 +43,25 @@ class RegistroActivity : ComponentActivity() {
                 Toast.makeText(this, "Senhas não são iguais", Toast.LENGTH_LONG).show()
 
             } else {
-                val it = Intent();
+                dao = UsuarioDAO(this)
 
-                it.putExtra(KeyUtil.KEY_REGISTRO_NOME_USUARIO, editNomeUsuario.text.toString())
-                it.putExtra(KeyUtil.KEY_REGISTRO_EMAIL_USUARIO, editEmailUsuario.text.toString())
-                it.putExtra(KeyUtil.KEY_REGISTRO_SENHA_USUARIO, editSenhaUsuario.text.toString())
+                val model = UsuarioModel()
+                model.setNomeUsuario(editNomeUsuario.text.toString())
+                model.setEmailUsuario(editEmailUsuario.text.toString())
+                model.setSenhaUsuario(editSenhaUsuario.text.toString())
 
-                setResult(1, it);
-                finish();
+                var linhasInseridas = dao.Insert(model)
+                if (linhasInseridas > 0) {
+                    val it = Intent();
+                    it.putExtra(KeyUtil.KEY_REGISTRO_NOME_USUARIO, editNomeUsuario.text.toString())
+                    it.putExtra(KeyUtil.KEY_REGISTRO_EMAIL_USUARIO, editEmailUsuario.text.toString())
+                    it.putExtra(KeyUtil.KEY_REGISTRO_SENHA_USUARIO, editSenhaUsuario.text.toString())
+
+                    setResult(1, it);
+                    finish();
+                } else {
+                    DialogUtil.show("Erro", "Falha ao cadastrar usuário no banco de dados!", this)
+                }
             }
         }
 

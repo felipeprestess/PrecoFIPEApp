@@ -17,12 +17,12 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="20sp"
-            android:text="Selecione a marca do veículo para consultar o valor"/>
+            android:text="Proximo passo: Selecione o modelo do veículo"/>
 
     </LinearLayout>
 
     <ListView
-        android:id="@+id/listaVeiculos"
+        android:id="@+id/listaModelo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
